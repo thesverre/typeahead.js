@@ -246,7 +246,7 @@ var Dataset = (function() {
       };
 
       this.source(query, sync, async);
-      !syncCalled && sync([]);
+      //!syncCalled && sync([]);
 
       function sync(suggestions) {
         if (syncCalled) { return; }
