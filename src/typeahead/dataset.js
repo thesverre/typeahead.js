@@ -247,6 +247,7 @@ var Dataset = (function() {
 
       this.source(query, sync, async);
       //!syncCalled && sync([]);
+      that.async && that.trigger('asyncRequested', query);
 
       function sync(suggestions) {
         if (syncCalled) { return; }
@@ -263,10 +264,18 @@ var Dataset = (function() {
       }
 
       function async(suggestions) {
-        suggestions = suggestions || [];
+        suggestions = (suggestions || []).slice(0, that.limit);
+        rendered = suggestions.length;
 
+        that._overwrite(query, suggestions);
+
+        if (rendered < that.limit && that.async) {
+          that.trigger('asyncReceived', query);
+        }
         // if the update has been canceled or if the query has changed
         // do not render the suggestions as they've become outdated
+        /*
+        suggestions = suggestions || [];
         if (!canceled && rendered < that.limit) {
           that.cancel = $.noop;
           var idx = Math.abs(rendered - that.limit);
@@ -274,6 +283,7 @@ var Dataset = (function() {
           that._append(query, suggestions.slice(0, idx));
           that.async && that.trigger("asyncReceived", query);
         }
+        */
       }
     },
 
